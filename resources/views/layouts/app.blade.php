@@ -14,6 +14,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('products.index') }}">Kelola Produk</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('transactions.index') }}">Transaksi</a>
+                </li>
             </ul>
         </div>
     </nav>
