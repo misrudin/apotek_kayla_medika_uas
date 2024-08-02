@@ -13,6 +13,7 @@ class Product extends Model
         "name",
         "category",
         "price",
-        "stock"
+        "stock",
+        "photo",
     ];
 }

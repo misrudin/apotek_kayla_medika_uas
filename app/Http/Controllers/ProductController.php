@@ -4,14 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->ajax()) {
+            $query = $request->input('query');
+            $products = Product::where('name', 'LIKE', "%{$query}%")
+                ->orWhere('category', 'LIKE', "%{$query}%")
+                ->orWhere('price', 'LIKE', "%{$query}%")
+                ->get();
+
+            return response()->json($products);
+        }
+
         $products = Product::all();
         return view("products.index", compact("products"));
     }
@@ -34,9 +45,17 @@ class ProductController extends Controller
             "category" => "required",
             "price" => "required|integer",
             "stock" => "required|integer",
+            "photo" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
         ]);
 
-        Product::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $data['photo'] = $path;
+        }
+
+        Product::create($data);
 
         return redirect()->route("products.index")->with("success", "Produk berhasil ditambahkan.");
     }
@@ -62,15 +81,28 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        // Validate the incoming request data
         $request->validate([
             "name" => "required",
             "category" => "required",
             "price" => "required|integer",
             "stock" => "required|integer",
+            "photo" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048", // Validate the photo
         ]);
 
-        $product->update($request->all());
+        // Initialize an array to hold the validated data
+        $data = $request->all();
 
+        // Check if a new photo is uploaded
+        if ($request->hasFile('photo')) {
+            if ($product->photo && Storage::exists('public/' . $product->photo)) {
+                Storage::delete('public/' . $product->photo);
+            }
+
+            $path = $request->file('photo')->store('photos', 'public');
+            $data['photo'] = $path;
+        }
+        $product->update($data);
         return redirect()->route("products.index")->with("success", "Produk berhasil diupdate.");
     }
 
