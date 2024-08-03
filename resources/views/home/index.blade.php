@@ -6,7 +6,7 @@
       <div class="col">
           <h3 class="page-title">Beranda</h3>
           <ul class="breadcrumb">
-              <li class="breadcrumb-item active">Beranda</li>
+              <li class="breadcrumb-item active">Beranda Apotek Kayla Medika</li>
           </ul>
       </div>
   </div>
