@@ -31,7 +31,7 @@
                     <div class="wordset">
                         <ul>
                             <li>
-                                <a href="{{ route('report.products') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
+                                <a target="_blank" href="{{ route('report.products') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
                                         src="{{ asset("assets/img/icons/pdf.svg") }}"
                                         alt="img" /></a>
                             </li>

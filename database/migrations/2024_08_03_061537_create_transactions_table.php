@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->integer('quantity');
-            $table->decimal('total_price', 10, 2);
+            $table->string('customer_name');
+            $table->timestamp('transaction_date')->useCurrent();
+            $table->decimal('total_amount', 15, 2);
             $table->timestamps();
         });
     }

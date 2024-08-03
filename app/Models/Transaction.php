@@ -9,14 +9,14 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        "product_id",
-        "quantity",
-        "total_price"
+    protected $fillable = ['customer_name', 'transaction_date', 'total_amount'];
+
+    protected $casts = [
+        'transaction_date' => 'datetime',
     ];
 
-    public function product()
+    public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasMany(TransactionProduct::class);
     }
 }

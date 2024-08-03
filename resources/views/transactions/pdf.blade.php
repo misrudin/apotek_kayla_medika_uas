@@ -1,47 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Transactions Report</title>
+    <meta charset="utf-8">
+    <title>Laporan Transaksi</title>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .container { padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
+        h3 { margin: 0 0 10px 0; }
+        .page-break { page-break-before: always; }
     </style>
 </head>
 <body>
-    <h1>Laporan Transaksi</h1>
-    <table>
-        <thead>
-            <tr>
-                <th style="text-align: center">#</th>
-                <th>Produk</th>
-                <th>Jumlah</th>
-                <th>Total Harga</th>
-                <th>Tanggal</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($transactions as $transaction)
+    <div class="container">
+        <h3>Laporan Transaksi</h3>
+
+        @foreach($transactions as $transaction)
+            <h4>Transaksi #{{ $transaction->id }}</h4>
+            <table>
                 <tr>
-                    <td style="text-align: center">{{ $loop->iteration }}</td>
-                    <td>{{ $transaction->product->name }}</td>
-                    <td>{{ $transaction->quantity }}</td>
-                    <td>{{ 'Rp ' . number_format($transaction->total_price, 2, ',', '.') }}</td>
-                    <td>{{ $transaction->created_at->format('d M Y, H:i') }}</td>
+                    <th>ID Transaksi:</th>
+                    <td>{{ $transaction->id }}</td>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+                <tr>
+                    <th>Nama Pelanggan:</th>
+                    <td>{{ $transaction->customer_name }}</td>
+                </tr>
+                <tr>
+                    <th>Tanggal:</th>
+                    <td>{{ $transaction->formatted_date }}</td>
+                </tr>
+                <tr>
+                    <th>Total:</th>
+                    <td>{{ formatRupiah($transaction->total_amount) }}</td>
+                </tr>
+            </table>
+
+            <h4>Detail Produk</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nama Produk</th>
+                        <th>Harga</th>
+                        <th>Jumlah</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($transaction->products as $index => $product)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $product->product->name }}</td>
+                            <td>{{ formatRupiah($product->price) }}</td>
+                            <td>{{ $product->quantity }}</td>
+                            <td>{{ formatRupiah($product->total) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <div class="page-break"></div>
+        @endforeach
+    </div>
 </body>
 </html>

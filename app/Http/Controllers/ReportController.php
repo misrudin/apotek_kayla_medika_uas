@@ -10,14 +10,16 @@ class ReportController extends Controller
 {
     public function transactionPDF()
     {
-        // Fetch transactions with related products
-        $transactions = Transaction::with('product')->get();
+        $transactions = Transaction::with('products.product')
+        ->get()
+        ->map(function($transaction) {
+            $transaction->formatted_date = $transaction->transaction_date->format('d M Y, H:i');
+            $transaction->total_amount = $transaction->products->sum('total');
+            return $transaction;
+        });
 
-        // Load the view and pass the transactions data
         $pdf = PDF::loadView('transactions.pdf', compact('transactions'));
-
-        // Return the PDF for download
-        return $pdf->download('transactions_report.pdf');
+        return $pdf->stream('transactions_report.pdf');
     }
 
     public function productPDF()
