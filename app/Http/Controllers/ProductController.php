@@ -81,19 +81,16 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        // Validate the incoming request data
         $request->validate([
             "name" => "required",
             "category" => "required",
             "price" => "required|integer",
             "stock" => "required|integer",
-            "photo" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048", // Validate the photo
+            "photo" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
         ]);
 
-        // Initialize an array to hold the validated data
         $data = $request->all();
 
-        // Check if a new photo is uploaded
         if ($request->hasFile('photo')) {
             if ($product->photo && Storage::exists('public/' . $product->photo)) {
                 Storage::delete('public/' . $product->photo);
